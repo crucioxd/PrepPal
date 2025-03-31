@@ -6,9 +6,13 @@ import { desc, eq } from "drizzle-orm";
 import React, { useEffect, useState } from "react";
 import { db } from "@/utils/db";
 import InterviewItemCard from "./InterviewItemCard";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 function InterviewList() {
   const { user } = useUser();
+  const router = useRouter();
   const [interviewList, setInterviewList] = useState([]);
 
   useEffect(() => {
@@ -29,21 +33,38 @@ function InterviewList() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-10">
-      <h2 className="font-medium  mb-8 text-2xl text-left text-blue-800  animate-fadeInDown">
+    <div className="min-h-screen py-10 relative">
+      <h2 className="font-medium mb-8 text-2xl text-left text-blue-800 animate-fadeInDown">
         Previous Mock Interviews
       </h2>
       <img 
         src="/inter-bg1.jpg" 
         alt="Decorative" 
-        className="absolute top-20 right-40 h-100 w-130 "
+        className="absolute -top-70 -right-10 h-100 w-130   "
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-        {interviewList &&
-          interviewList.map((interview, index) => (
+      
+      {interviewList.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 relative z-10">
+          {interviewList.map((interview, index) => (
             <InterviewItemCard interview={interview} key={index} />
           ))}
-      </div>
+        </div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="flex flex-col items-center justify-center mt-20 relative z-10"
+        >
+          <h2 className="text-3xl font-medium text-blue-800 mb-4">
+            No Previous Interviews Found
+          </h2>
+          <p className="text-gray-600 mb-6 text-center max-w-md">
+            Start your preparation now with PrepPal! Create your first mock interview and unlock your full potential.
+          </p>
+         
+        </motion.div>
+      )}
     </div>
   );
 }

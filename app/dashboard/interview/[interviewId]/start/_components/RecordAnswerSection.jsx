@@ -155,7 +155,7 @@ function RecordAnswerSection({
             <LoaderCircle className="animate-spin mr-2" />
           ) : isRecording ? (
             <>
-              <StopCircle className="mr-2 text-red-600" />
+              <StopCircle className="mr-2 text-red-900" />
               Stop Recording
             </>
           ) : (
@@ -167,11 +167,12 @@ function RecordAnswerSection({
         </Button>
 
         <Button
-          variant="secondary"
+          
           onClick={handleSaveAnswer}
           disabled={!userAnswer || processing}
+          className="my-4 bg-blue-200 text-black-900"
         >
-          {processing ? "Saving..." : "Save Answer Manually"}
+          {processing ? "Saving..." : "Save Answer"}
         </Button>
       </div>
 
