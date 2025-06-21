@@ -28,18 +28,18 @@ function Interview({ params }) {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-4 md:px-8 lg:px-16"
+      className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-4 sm:px-6 md:px-8 lg:px-16"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <motion.div
-        className="max-w-6xl mx-auto"
+        className="max-w-6xl mx-auto w-full"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <h2 className="font-bold text-3xl md:text-4xl text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+        <h2 className="font-bold text-2xl sm:text-3xl md:text-4xl text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
           Let's Get Started
         </h2>
 
@@ -52,25 +52,25 @@ function Interview({ params }) {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
                 Position Details
               </h2>
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-gray-500">Job Role/Position</p>
-                  <p className="text-lg font-medium text-gray-900">
+                  <p className="text-base font-medium text-gray-900 truncate">
                     {interviewData?.jobPosition || "Loading..."}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Tech Stack</p>
-                  <p className="text-lg font-medium text-gray-900">
+                  <p className="text-base font-medium text-gray-900">
                     {interviewData?.jobDescription || "Loading..."}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Experience Required</p>
-                  <p className="text-lg font-medium text-gray-900">
+                  <p className="text-base font-medium text-gray-900">
                     {interviewData?.jobExperience || "Loading..."} years
                   </p>
                 </div>
@@ -84,11 +84,11 @@ function Interview({ params }) {
             >
               <div className="flex items-center gap-3 mb-4">
                 <Lightbulb className="w-6 h-6 text-blue-600" />
-                <h3 className="text-lg font-semibold text-gray-800">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800">
                   Information
                 </h3>
               </div>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
                 {process.env.NEXT_PUBLIC_INFORMATION}
               </p>
             </motion.div>
@@ -101,12 +101,12 @@ function Interview({ params }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <div className="w-full max-w-md aspect-video bg-gray-100 rounded-2xl shadow-xl overflow-hidden border-2 border-gray-200">
+            <div className="w-full max-w-md aspect-video max-h-[50vh] bg-gray-100 rounded-2xl shadow-xl overflow-hidden border-2 border-gray-200">
               {webcamEnabled ? (
                 <Webcam
                   onUserMedia={() => setWebcamEnabled(true)}
                   onUserMediaError={() => setWebcamEnabled(false)}
-                  mirrored={true}
+                  mirrored
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -124,23 +124,24 @@ function Interview({ params }) {
           </motion.div>
         </div>
 
-        {/* Start Interview Button */}
+        {/* Start Button */}
         <motion.div
           className="mt-12 flex justify-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <Link href={'/dashboard/interview/' + params.interviewId + '/start'}>
-          <Button 
-
-            className="px-8 py-6 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            className="w-full max-w-xs"
           >
-            Start Interview
-          </Button>
-          </Link>
+            <Link href={`/dashboard/interview/${params.interviewId}/start`}>
+              <Button className="w-full px-6 py-4 text-base sm:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                Start Interview
+              </Button>
+            </Link>
+          </motion.div>
         </motion.div>
       </motion.div>
     </motion.div>

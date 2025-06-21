@@ -27,20 +27,22 @@ function StartInterview() {
       .from(MockInterview)
       .where(eq(MockInterview.mockId, interviewId));
 
-    setInterviewData(result[0]);
-    const jsonMockResp = JSON.parse(result[0].jsonMockResp);
-    setMockInterviewQues(jsonMockResp);
+    if (result.length > 0) {
+      setInterviewData(result[0]);
+      const jsonMockResp = JSON.parse(result[0].jsonMockResp);
+      setMockInterviewQues(jsonMockResp);
+    }
   };
 
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-10 py-6">
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         <QuestionsSection
           mockInterviewQues={mockInterviewQues}
           activeQuestion={activeQuestion}
           setActiveQuestion={setActiveQuestion}
         />
-        {/* Video recording section */}
         <RecordAnswerSection
           mockInterviewQues={mockInterviewQues}
           activeQuestion={activeQuestion}
@@ -49,21 +51,22 @@ function StartInterview() {
         />
       </div>
 
-      <div className="flex justify-end gap-6">
+      {/* Navigation Buttons */}
+      <div className="flex flex-wrap gap-4 justify-end">
         {activeQuestion > 0 && (
           <Button onClick={() => setActiveQuestion(activeQuestion - 1)}>
             Previous Question
           </Button>
         )}
 
-        {activeQuestion != mockInterviewQues?.length - 1 && (
+        {activeQuestion !== mockInterviewQues?.length - 1 && (
           <Button onClick={() => setActiveQuestion(activeQuestion + 1)}>
             Next Question
           </Button>
         )}
 
-        {activeQuestion == mockInterviewQues?.length - 1 && (
-          <Link href={'/dashboard/interview/' + interviewData?.mockId+"/feedback"}>
+        {activeQuestion === mockInterviewQues?.length - 1 && interviewData && (
+          <Link href={`/dashboard/interview/${interviewData.mockId}/feedback`}>
             <Button>End Interview</Button>
           </Link>
         )}

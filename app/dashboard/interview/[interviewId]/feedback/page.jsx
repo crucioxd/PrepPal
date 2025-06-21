@@ -28,44 +28,38 @@ function Feedback({ params }) {
       .from(UserAnswer)
       .where(eq(UserAnswer.mockIdref, params.interviewId))
       .orderBy(UserAnswer.id);
-
-    console.log(result);
     setFeedbackList(result);
   };
 
   const calculateOverallRating = () => {
     if (feedbackList.length === 0) return 0;
-
-    const total = feedbackList.reduce((sum, item) => {
-      return sum + (Number(item.rating) || 0);
-    }, 0);
-
+    const total = feedbackList.reduce((sum, item) => sum + (Number(item.rating) || 0), 0);
     return (total / feedbackList.length).toFixed(1);
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
-      {/* Heading Section */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }} 
-        animate={{ opacity: 1, y: 0 }} 
+    <div className="max-w-4xl mx-auto mt-6 md:mt-10 px-4 sm:px-6 md:px-10 py-6 bg-white shadow-lg rounded-xl">
+      {/* Heading */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h2 className="text-4xl font-extrabold text-green-600">🎉 Congratulations!</h2>
-        <p className="text-gray-600 mt-2 text-lg">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-green-600">🎉 Congratulations!</h2>
+        <p className="text-gray-600 mt-2 text-base sm:text-lg">
           Here's your interview feedback with detailed insights.
         </p>
       </motion.div>
 
       {/* Overall Rating */}
-      <motion.div 
-        initial={{ opacity: 0, y: -10 }} 
-        animate={{ opacity: 1, y: 0 }} 
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
         className="my-6 text-center"
       >
-        <h2 className="text-2xl font-semibold text-blue-800">
+        <h2 className="text-xl sm:text-2xl font-semibold text-blue-800">
           ⭐ Overall Rating: <span className="font-bold">{calculateOverallRating()}/10</span>
         </h2>
         <p className="text-gray-500 text-sm">Based on your responses</p>
@@ -74,21 +68,21 @@ function Feedback({ params }) {
       {/* Feedback List */}
       <div className="space-y-4">
         {feedbackList.map((item, index) => (
-          <motion.div 
-            key={index} 
-            initial={{ opacity: 0, scale: 0.95 }} 
-            animate={{ opacity: 1, scale: 1 }} 
-            transition={{ delay: 0.2 * index, duration: 0.4 }}
-            className="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm"
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 * index, duration: 0.4 }}
+            className="bg-gray-50 border border-gray-200 rounded-xl p-3 sm:p-4 shadow-sm"
           >
             <Collapsible>
-              <CollapsibleTrigger className="w-full flex justify-between items-center p-3 bg-blue-100 hover:bg-blue-200 rounded-lg text-blue-900 font-medium transition duration-300">
-                {item.question}
-                <ChevronsUpDown className="ml-2" />
+              <CollapsibleTrigger className="w-full flex justify-between items-center p-3 bg-blue-100 hover:bg-blue-200 rounded-lg text-blue-900 font-medium transition duration-300 text-left">
+                <span className="flex-1">{item.question}</span>
+                <ChevronsUpDown className="ml-2 shrink-0" />
               </CollapsibleTrigger>
 
               <CollapsibleContent>
-                <div className="mt-3 space-y-3">
+                <div className="mt-3 space-y-3 text-sm sm:text-base">
                   <div className="p-3 border rounded-lg bg-red-100 text-red-800">
                     <strong>Rating: </strong>{item.rating}
                   </div>
@@ -109,14 +103,14 @@ function Feedback({ params }) {
       </div>
 
       {/* Go Home Button */}
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }} 
-        animate={{ opacity: 1, y: 0 }} 
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.5 }}
-        className="text-center mt-6"
+        className="text-center mt-8"
       >
-        <Button 
-          onClick={() => router.replace('/dashboard')} 
+        <Button
+          onClick={() => router.replace("/dashboard")}
           className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-lg shadow-md transition duration-300"
         >
           Go Home

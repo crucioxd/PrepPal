@@ -1,7 +1,6 @@
 "use client";
 import Webcam from "react-webcam";
 import useSpeechToText from "react-hook-speech-to-text";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mic, MicOff, StopCircle, LoaderCircle } from "lucide-react";
@@ -10,7 +9,7 @@ import { db } from "@/utils/db";
 import { chatSession } from "@/utils/geminiaimodel";
 import { UserAnswer } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
-import moment from "moment/moment";
+import moment from "moment";
 
 function RecordAnswerSection({
   mockInterviewQues,
@@ -22,7 +21,7 @@ function RecordAnswerSection({
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
-  
+
   const {
     error,
     interimResult,
@@ -43,15 +42,14 @@ function RecordAnswerSection({
     },
   });
 
-  // Consolidated transcription effect
   useEffect(() => {
-    const fullTranscript = results.map(r => r?.transcript).join(' ');
+    const fullTranscript = results.map((r) => r?.transcript).join(" ");
     setUserAnswer(fullTranscript);
   }, [results]);
 
   const handleStartRecording = async () => {
     try {
-      setUserAnswer('');
+      setUserAnswer("");
       setResults([]);
       await startSpeechToText();
       toast.info("Recording started");
@@ -76,17 +74,16 @@ function RecordAnswerSection({
 
   const handleSaveAnswer = async () => {
     if (!userAnswer || processing) return;
-    
     setProcessing(true);
     try {
       const feedBackprompt = `Question: ${mockInterviewQues[activeQuestion]?.question}
-        User Answer: ${userAnswer}
-        Please provide rating (0-10) and brief feedback in JSON format:
-        { "rating": number, "feedback": string }`;
+      User Answer: ${userAnswer}
+      Please provide rating (0-10) and brief feedback in JSON format:
+      { "rating": number, "feedback": string }`;
 
       const result = await chatSession.sendMessage(feedBackprompt);
       const rawResponse = result.response.text();
-      const cleanResponse = rawResponse.replace(/```json|```/g, '');
+      const cleanResponse = rawResponse.replace(/```json|```/g, "");
       const JsonFeedbackResp = JSON.parse(cleanResponse);
 
       const resp = await db.insert(UserAnswer).values({
@@ -97,43 +94,43 @@ function RecordAnswerSection({
         feedback: JsonFeedbackResp?.feedback,
         rating: JsonFeedbackResp?.rating,
         userEmail: user?.primaryEmailAddress?.emailAddress,
-        createdAt: moment().format('DD-MM-yyyy')
+        createdAt: moment().format("DD-MM-yyyy"),
       });
 
       if (resp) {
         toast.success("Answer saved successfully");
-        setActiveQuestion(prev => Math.min(prev + 1, mockInterviewQues.length - 1));
+        setActiveQuestion((prev) =>
+          Math.min(prev + 1, mockInterviewQues.length - 1)
+        );
       }
     } catch (error) {
       console.error("Save failed:", error);
       toast.error("Failed to save answer");
     } finally {
       setProcessing(false);
-      setUserAnswer('');
+      setUserAnswer("");
       setResults([]);
     }
   };
 
-  if (error) return (
-    <div className="text-red-500 p-4 border rounded-lg bg-red-50">
-      Microphone error: {error.message}
-      <Button className="mt-2" onClick={() => window.location.reload()}>
-        Reload Page
-      </Button>
-    </div>
-  );
+  if (error)
+    return (
+      <div className="text-red-500 p-4 border rounded-lg bg-red-50">
+        Microphone error: {error.message}
+        <Button className="mt-2" onClick={() => window.location.reload()}>
+          Reload Page
+        </Button>
+      </div>
+    );
 
   return (
-    <div className="flex items-center justify-center flex-col">
-      <div className="relative flex flex-col mt-20 justify-center items-center bg-secondary rounded-lg p-5 my-5">
+    <div className="flex flex-col items-center justify-center px-4 py-6">
+      {/* Webcam */}
+      <div className="relative w-full max-w-md bg-secondary rounded-lg overflow-hidden shadow-lg">
         <Webcam
           mirrored={true}
-          style={{
-            height: 300,
-            width: "100%",
-            zIndex: 10,
-            borderRadius: 8,
-          }}
+          className="w-full h-auto object-cover rounded-md"
+          videoConstraints={{ facingMode: "user" }}
         />
         {isRecording && (
           <div className="absolute top-2 right-2 flex items-center gap-2">
@@ -144,10 +141,11 @@ function RecordAnswerSection({
         )}
       </div>
 
-      <div className="flex gap-4">
-        <Button 
-          variant="outline" 
-          className="my-4 w-48"
+      {/* Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full max-w-md">
+        <Button
+          variant="outline"
+          className="w-full"
           onClick={isRecording ? handleStopRecording : handleStartRecording}
           disabled={processing}
         >
@@ -167,19 +165,19 @@ function RecordAnswerSection({
         </Button>
 
         <Button
-          
           onClick={handleSaveAnswer}
           disabled={!userAnswer || processing}
-          className="my-4 bg-blue-200 text-black-900"
+          className="w-full bg-blue-200 text-black"
         >
           {processing ? "Saving..." : "Save Answer"}
         </Button>
       </div>
 
+      {/* Transcription */}
       {userAnswer && (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full max-w-2xl">
-          <h3 className="text-sm font-semibold mb-2">Current Answer:</h3>
-          <p className="text-gray-700">{userAnswer}</p>
+        <div className="mt-6 w-full max-w-2xl p-4 bg-gray-50 rounded-lg overflow-auto">
+          <h3 className="text-sm font-semibold mb-2 text-gray-700">Your Answer:</h3>
+          <p className="text-gray-800 text-sm leading-relaxed">{userAnswer}</p>
         </div>
       )}
     </div>
